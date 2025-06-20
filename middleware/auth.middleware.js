@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken"
 
 const isLoggedIn = async (req, res, next) => {
     const { token } = req.cookies;
+    console.log("token in is logged in",token);
 
     if (!token) {
         return res.status(401).json({
