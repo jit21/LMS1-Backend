@@ -13,6 +13,47 @@ export const getRazorPayApiKey = async (req, res, next) => {
 };
 
 // ✅ Buy Subscription
+// export const buySubscription = async (req, res, next) => {
+//   try {
+//     const { id } = req.user;
+//     const user = await User.findById(id);
+
+//     if (!user) {
+//       return res.status(401).json({
+//         success: false,
+//         message: "Unauthorized, please login",
+//       });
+//     }
+
+//     if (user.role === "ADMIN") {
+//       return res.status(403).json({
+//         success: false,
+//         message: "ADMIN can't buy subscription",
+//       });
+//     }
+
+//     const subscription = await razorpay.subscriptions.create({
+//       plan_id: process.env.RAZORPAY_PLAN_ID,
+//       customer_notify: 1,
+//     });
+
+//     // ✅ Fixed typo: 'subcription' ➜ 'subscription'
+//     user.subscription.id = subscription.id;
+//     user.subscription.status = subscription.status;
+//     await user.save();
+
+//     res.status(200).json({
+//       success: true,
+//       message: "Subscribed successfully",
+//       subscription_id: subscription.id,
+//     });
+//   } catch (err) {
+//     return res.status(500).json({
+//       success: false,
+//       message: err.message,
+//     });
+//   }
+// };
 export const buySubscription = async (req, res, next) => {
   try {
     const { id } = req.user;
@@ -32,12 +73,22 @@ export const buySubscription = async (req, res, next) => {
       });
     }
 
+    // 👉 Log to confirm environment variable is available
+    console.log("RAZORPAY_PLAN_ID:", process.env.RAZORPAY_PLAN_ID);
+
+    if (!process.env.RAZORPAY_PLAN_ID) {
+      return res.status(500).json({
+        success: false,
+        message: "Razorpay Plan ID is not defined in environment variables",
+      });
+    }
+
     const subscription = await razorpay.subscriptions.create({
       plan_id: process.env.RAZORPAY_PLAN_ID,
       customer_notify: 1,
     });
 
-    // ✅ Fixed typo: 'subcription' ➜ 'subscription'
+    console.log("Subscription created:", subscription.id, subscription.status);
     user.subscription.id = subscription.id;
     user.subscription.status = subscription.status;
     await user.save();
@@ -48,6 +99,7 @@ export const buySubscription = async (req, res, next) => {
       subscription_id: subscription.id,
     });
   } catch (err) {
+    console.error("Buy Subscription Error:", err); // ✅ Add this
     return res.status(500).json({
       success: false,
       message: err.message,
