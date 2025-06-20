@@ -35,6 +35,7 @@ const isLoggedIn = async (req, res, next) => {
     }
 
     const token = authHeader.split(" ")[1];
+    console.log("logged in token",token);
 
     try {
         const userDetails = jwt.verify(token, process.env.JWT_SECRET);
