@@ -83,10 +83,15 @@ export const buySubscription = async (req, res, next) => {
       });
     }
 
+    // const subscription = await razorpay.subscriptions.create({
+    //   plan_id: process.env.RAZORPAY_PLAN_ID,
+    //   customer_notify: 1,
+    // });
     const subscription = await razorpay.subscriptions.create({
-      plan_id: process.env.RAZORPAY_PLAN_ID,
-      customer_notify: 1,
-    });
+  plan_id: process.env.RAZORPAY_PLAN_ID,
+  total_count: 1, // 🔥 Add this line
+  customer_notify: 1,
+});
 
     console.log("Subscription created:", subscription.id, subscription.status);
     user.subscription.id = subscription.id;
