@@ -60,7 +60,7 @@ this.password= await bcrypt.hash(this.password,10);
 userSchma.methods={
     generateJWTToken: async function(){
         return await jwt.sign({
-            id: this._id, email: this.email, subsription: this.subsription, role: this.role
+            id: this._id, email: this.email, subscription: this.subscription, role: this.role
         },
         process.env.JWT_SECRET,
         {
