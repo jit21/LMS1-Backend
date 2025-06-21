@@ -133,10 +133,18 @@ export const verifySubscription = async (req, res, next) => {
     const subscriptionId = user.subscription.id;
 
     // ✅ Signature generation (order may vary depending on Razorpay config)
-    const generatedSignature = crypto
-      .createHmac("sha256", process.env.RAZORPAY_SECRET)
-      .update(`${razorpay_subscription_id}|${razorpay_payment_id}`)
-      .digest("hex");
+    // const generatedSignature = crypto
+    //   .createHmac("sha256", process.env.RAZORPAY_SECRET)
+    //   .update(`${razorpay_subscription_id}|${razorpay_payment_id}`)
+    //   .digest("hex");
+   const generatedSignature = crypto
+  .createHmac("sha256", process.env.RAZORPAY_SECRET)
+  .update(`${razorpay_payment_id}|${razorpay_subscription_id}`) // ✅ Correct order
+  .digest("hex");
+   console.log("Incoming Razorpay Payment ID:", razorpay_payment_id);
+   console.log("Incoming Razorpay Subscription ID:", razorpay_subscription_id);
+   console.log("Incoming Razorpay Signature:", razorpay_signature);
+
 
     if (generatedSignature !== razorpay_signature) {
       return res.status(400).json({
