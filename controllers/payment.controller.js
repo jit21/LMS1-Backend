@@ -156,7 +156,7 @@ export const verifySubscription = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      message: "Payment verified successfully",
+  message: "Payment verified successfully",
     });
   } catch (err) {
     return res.status(500).json({
